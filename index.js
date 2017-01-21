@@ -1,13 +1,13 @@
 const express = require('express');
-const app = express();
 const moniker = require('moniker');
+const logger = require('logops');
 
 const config = {};
 const jwt = require('jwt-utils')(config);
-
 const JWT_SECRET = process.env.JWT_SECRET || '01234567890abcde01234567890abcde01234567890abcde01234567890abcde';
 const JWT_HEADER = { alg: 'A128CBC', typ: 'JWT', kid: 'id' };
 
+const app = express();
 app.get('/api/meeting', (req, res) => {
     let payload = {
         room: moniker.choose() // ex. 'red-unicorn'
@@ -21,7 +21,7 @@ app.get('/api/meeting', (req, res) => {
         let response = {
             meeting_url: `http://localhost:3000/${token}`
         }
-        res.json(response);
+        return res.json(response);
     });
 });
 
@@ -38,4 +38,9 @@ app.get('/:jwt', (req, res) => {
     });
 });
 
-app.listen(process.env.PORT || 3000);
+let port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 3000
+let host = process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0'
+
+app.listen(port, host, () => {
+    logger.info('listening');
+})
