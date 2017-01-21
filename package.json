@@ -1,0 +1,20 @@
+{
+  "name": "tokbox",
+  "version": "1.0.0",
+  "description": "Toxbox meeting rooms for people with class",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "meetings",
+    "tokbox"
+  ],
+  "author": "Guido García <https://twitter.com/palmerabollo>",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0",
+    "jwt-utils": "^1.0.4",
+    "moniker": "^0.1.2"
+  }
+}
