@@ -1,15 +1,29 @@
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Reuniones para gente con clase</title>
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
-</head>
-<body>
-    <h1>Crear reunión para gente con clase</h1>
-    Inicio: <input id="datetime" type="datetime-local" name="datetime"><br />
-    Minutos de cortesía: <input id="minutes" type="number" value="5" name="minutes" min="0" max="10"><br />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <p id="room"></p>
-    <p id="url"></p>
+    <title>Meetings with class</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+</head>
+
+<body>
+    <p>
+    <div class="container">
+        <div class="jumbotron">
+            <h1 class="display-3">Meetings with class</h1>
+            <p class="lead">Every minute spent in a meeting is a minute you can get real work done instead.</p>
+            <hr class="my-4">
+            <p>
+                Start time: <input id="datetime" type="datetime-local" name="datetime" autofocus>
+                Minutes of "courtesy": <input id="minutes" type="number" value="5" name="minutes" min="0" max="10">
+            </p>
+            <p id="room"></p>
+            <p id="url"></p>
+        </div>
+    </div>
 
     <script>
         $("input").on('change', function() {
@@ -19,10 +33,28 @@
             };
 
             $.post('/meeting', body, function(data, status) {
-                $("#room").html('<b>Sala de reunión:</b> https://meet.tokbox.com/' + data.meeting_id);
-                $("#url").html('<b>Sala de reunión para gente con clase:</b>' + data.meeting_url);
+                $("#room").html('<b>Sala de reunión</b><br>https://meet.tokbox.com/' + data.meeting_id);
+
+                $.ajax({
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        longUrl: data.meeting_url
+                    }),
+                    dataType: 'json',
+                    success: function(data) {
+                        $("#url").html('<b>Sala de reunión para gente con clase</b><br>' + data.id);
+                    },
+                    error: function(){
+                        $("#url").html('<b>Sala de reunión para gente con clase</b><br> INTERNAL ERROR FOUND');
+                    },
+                    type: 'POST',
+                    url: 'https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyAVMYrYkrREike6fhK8LTVbc9L4NdTdX6o'
+                });
             });
         });
     </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 </body>
 </html>

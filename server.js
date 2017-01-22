@@ -14,13 +14,19 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/site', express.static('site'));
+app.get('/favicon.ico', (req, res) => { res.status(200); });
+
+app.get('/', (req, res) => {
+    return res.redirect('/site');
+});
 
 app.post('/meeting', (req, res) => {
     // TODO validation needed
+    logger.debug(req.body, 'Meeting request');
 
     let payload = {
-        room: moniker.choose(), // ex. 'red-unicorn'
-        expires_at: moment(req.body.datetime).add(req.body.minutes, 'minute')
+        room: moniker.choose() + '-' + req.body.minutes, // ex. 'red-unicorn'
+        expires_at: moment(req.body.datetime).add(req.body.minutes, 'minute').toDate()
     };
 
     jwt.buildJWTEncrypted(payload, JWT_HEADER, JWT_SECRET, JWT_SECRET, (err, token) => {
@@ -28,8 +34,9 @@ app.post('/meeting', (req, res) => {
             throw new Error(`Not able to generate JWT token: ${err.message}`);
         }
 
-        let referer = url.parse(req.headers.referer || 'http://localhost:3000');
+        logger.debug(payload, 'Token encrypted');
 
+        let referer = url.parse(req.headers.referer || 'http://localhost:3000');
         let response = {
             meeting_id: payload.room,
             meeting_url: `${referer.protocol}//${referer.host}/${token}`
@@ -46,6 +53,9 @@ app.get('/:jwt', (req, res) => {
         if (err) {
             throw new Error(`Not able to generate JWT token: ${err.message}`);
         }
+
+        logger.debug(token.payload, 'Token decrypted');
+        logger.debug('Current date: ' + new Date());
 
         let expires_at = moment(token.payload.expires_at);
         let now = moment();
