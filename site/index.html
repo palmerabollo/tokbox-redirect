@@ -4,9 +4,9 @@
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 </head>
 <body>
-    <h1>Nueva reunión para gente con clase</h1>
+    <h1>Crear reunión para gente con clase</h1>
     Inicio: <input id="datetime" type="datetime-local" name="datetime"><br />
-    Minutos de cortesía: <input id="minutes" type="number" value="5" name="minutes" min="0" max="15"><br />
+    Minutos de cortesía: <input id="minutes" type="number" value="5" name="minutes" min="0" max="10"><br />
 
     <p id="room"></p>
     <p id="url"></p>
@@ -19,9 +19,8 @@
             };
 
             $.post('/meeting', body, function(data, status) {
-                $("#room").text('https://meet.tokbox.com/' + data.meeting_id);
-                $("#url").text(data.meeting_url);
-                console.log(JSON.stringify(data));
+                $("#room").html('<b>Sala de reunión:</b> https://meet.tokbox.com/' + data.meeting_id);
+                $("#url").html('<b>Sala de reunión para gente con clase:</b>' + data.meeting_url);
             });
         });
     </script>
