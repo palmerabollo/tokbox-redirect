@@ -36,7 +36,7 @@ app.post('/meeting', (req, res) => {
 
         logger.debug(payload, 'Token encrypted');
 
-        let referer = url.parse(req.headers.referer || 'http://localhost:3000');
+        let referer = url.parse(req.headers.referer || 'http://localhost:8080');
         let response = {
             meeting_id: payload.room,
             meeting_url: `${referer.protocol}//${referer.host}/${token}`
@@ -69,7 +69,7 @@ app.get('/:jwt', (req, res) => {
     });
 });
 
-let port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 3000
+let port = process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 8080
 let host = process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0'
 
 app.listen(port, host, () => {
