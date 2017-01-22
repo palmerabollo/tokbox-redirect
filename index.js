@@ -61,7 +61,7 @@ app.get('/:jwt', (req, res) => {
         let now = moment();
 
         if (now > expires_at) {
-            return res.redirect('/site/expired.html');
+            return res.redirect('/site/expired.html?expires_at=' + expires_at.toISOString() + '&now=' + now.toISOString());
         }
 
         let room = token.payload.room;
